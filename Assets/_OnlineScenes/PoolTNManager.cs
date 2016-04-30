@@ -18,11 +18,8 @@ public class PoolTNManager : MonoBehaviour
     public string disconnectLevel;
 
     public UIInput userName;
+    public UILabel hintLabel;
 
-    string successFunctionName;
-    string failureFunctionName;
-
-    bool foundChannel = false;
 
     void Awake()
     {
@@ -46,7 +43,6 @@ public class PoolTNManager : MonoBehaviour
             TNManager.SetPacketHandler((byte)Packet.ResponseChannelList, OnChannelList);
         }
     }
-
 
     public void FindGame()
     {
@@ -75,11 +71,10 @@ public class PoolTNManager : MonoBehaviour
             TNManager.client.BeginSend(Packet.RequestChannelList);
             TNManager.client.EndSend();
         }
-        else if (!string.IsNullOrEmpty(failureFunctionName))
+        else
         {
-            UnityTools.Broadcast(failureFunctionName, message);
+            UnityTools.Broadcast("OnJoinFailed", message);
         }
-        else Debug.LogError(message);
     }
 
     /// <summary>
@@ -103,19 +98,11 @@ public class PoolTNManager : MonoBehaviour
     {
         if (result)
         {
-            if (!string.IsNullOrEmpty(successFunctionName))
-            {
-                UnityTools.Broadcast(successFunctionName);
-            }
+             UnityTools.Broadcast("OnJoinSucceed", message);
         }
         else
         {
-            if (!string.IsNullOrEmpty(failureFunctionName))
-            {
-                UnityTools.Broadcast(failureFunctionName, message);
-            }
-            else Debug.LogError(message);
-
+            UnityTools.Broadcast("OnJoinFailed", message);
             TNManager.Disconnect();
         }
     }
@@ -171,6 +158,27 @@ public class PoolTNManager : MonoBehaviour
     void JoinChannel(int channelID)
     {
         Debug.Log("Joining Channel: " + channelID);
-        TNManager.JoinChannel(channelID, connectLevel, persistent, maxPlayerCountPerChannel, null);
+        TNManager.JoinChannel(channelID, null, persistent, maxPlayerCountPerChannel, null);
+    }
+
+    void OnNetworkPlayerJoin(Player p)
+    {
+        // reaches 2 players, load level
+        TNManager.LoadLevel(connectLevel);
+    }
+
+    void OnJoinSucceed(string message)
+    {
+        // hide the user name input and show the wait hint
+        if (TNManager.players.Count == 0)
+        {
+            NGUITools.SetActive(userName.gameObject, false);
+            NGUITools.SetActive(hintLabel.gameObject, true);
+        }
+    }
+
+    void OnJoinFailed(string message)
+    {
+        Debug.LogError(message);
     }
 }

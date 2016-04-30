@@ -3,7 +3,7 @@ using System.Collections;
 namespace PoolKit
 {
 	//the base play for our bowling characters -- wether it be human or AI
-	public class BasePlayer : MonoBehaviour 
+	public class BasePlayer : TNBehaviour 
 	{
 		//a scalar that effects how much our x-component will effect when firing the ball. The smaller it is the easier it should be to get a strike.
 		public float xScalar = .25f;

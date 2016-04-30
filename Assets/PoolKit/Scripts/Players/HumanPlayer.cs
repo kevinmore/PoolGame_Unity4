@@ -3,7 +3,7 @@ using System.Collections;
 namespace PoolKit
 {
 	//our human player script
-	public class HumanPlayer : BasePlayer 
+	public class HumanPlayer : BasePlayer
 	{
 		//the rotation speed 
 		public float rotationSpeed = 5;
@@ -31,8 +31,21 @@ namespace PoolKit
 		//the style to use
 		public GUIStyle style0;
 
+        public override void Awake()
+        {
+            base.Awake();
 
-		public override void Start()
+            if (tno.isMine)
+            {
+                playerName = TNManager.player.name;
+            }
+            else
+            {
+                playerName = TNManager.players[0].name;
+            }
+        }
+
+        public override void Start()
 		{
 			base.Start();
 

@@ -158,7 +158,10 @@ public class PoolTNManager : MonoBehaviour
             string level = reader.ReadString();
 
             if (playerCount < maxPlayerCountPerChannel)
+            {
                 JoinChannel(channelID);
+                return;
+            }
         }
 
         // should only reach here when all the channels are full

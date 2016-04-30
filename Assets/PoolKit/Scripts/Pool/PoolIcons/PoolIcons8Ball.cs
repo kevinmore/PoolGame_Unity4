@@ -14,7 +14,7 @@ namespace PoolKit
 		public override void startGame () {
 			PoolBall[] balls = (PoolBall[])GameObject.FindObjectsOfType(typeof(PoolBall));
 			m_nomBalls = balls.Length;
-			Debug.Log ("poolIcons" + m_nomBalls);
+			//Debug.Log ("poolIcons" + m_nomBalls);
 			if(m_nomBalls>0)
 			{	
 				base.startGame();

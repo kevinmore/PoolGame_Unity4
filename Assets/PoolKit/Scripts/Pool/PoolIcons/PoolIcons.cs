@@ -54,7 +54,7 @@ namespace PoolKit
 							str = "0" + (i+1);
 						}
 						string ballName = "GUI/GUI_ball" + str;
-						Debug.Log ("load texture " + ballName);
+						//Debug.Log ("load texture " + ballName);
 						m_textures[i] = Resources.Load (ballName) as Texture;
 
 						m_ballIcons[i] = go.GetComponent<GUITexture>();

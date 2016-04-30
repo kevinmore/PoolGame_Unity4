@@ -24,7 +24,7 @@ namespace PoolKit
 
 		void onSetAudioVolume () {
 			GetComponent<AudioSource>().volume = PlayerPrefs.GetFloat("AudioVolume",1) * m_initalVol;
-			Debug.Log ("onSetAudioVolume" + GetComponent<AudioSource>().volume);
+			//Debug.Log ("onSetAudioVolume" + GetComponent<AudioSource>().volume);
 
 		}
 	}

@@ -46,16 +46,11 @@ namespace PoolKit
 		{
 			m_cue = (PoolCue)GameObject.FindObjectOfType(typeof(PoolCue));
 			m_balls= (PoolBall[])GameObject.FindObjectsOfType(typeof(PoolBall));
-			m_ball =  gameObject.GetComponentInChildren<WhiteBall>();
-
-
 		}
 		public virtual void Start()
 		{
 			m_ball = (WhiteBall)GameObject.FindObjectOfType(typeof(WhiteBall));
 
-
-			//	m_cue = gameObject.GetComponentInChildren<PoolCue>();
 			m_myTurn = playerIndex==0;
 			onPlayerTurn(0);
 		}
@@ -175,16 +170,16 @@ namespace PoolKit
 		{
 			m_fired=false;
 		}
-		void onShotExpires()
-		{
-			if(m_myTurn)
-			{
-				fireBall();
-			}
-		}
-		public virtual void fireBall()
-		{
-		}
+// 		void onShotExpires()
+// 		{
+// 			if(m_myTurn)
+// 			{
+// 				fireBall();
+// 			}
+// 		}
+// 		public virtual void fireBall()
+// 		{
+// 		}
 		public PoolCue getCue()
 		{
 			return m_cue;

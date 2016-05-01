@@ -89,7 +89,7 @@ namespace PoolKit
 			//(WhiteBall) GameObject.FindObjectOfType(typeof(WhiteBall));
 			
 			
-			GameObject go = new GameObject();
+			GameObject go = new GameObject("reflect");
 			if(go)
 			{
 				m_lr2 = go.AddComponent<LineRenderer>();
@@ -218,7 +218,7 @@ namespace PoolKit
 			//lets set the balls target and the target position. When the white ball hits the first ball we will set the ball to point at the target.
 			m_whiteBall.setTarget(m_targetBall,m_targetPos);
 
-			Debug.Log ("FIRE BALL" + m_whiteBall.name);
+//			Debug.Log ("FIRE BALL" + m_whiteBall.name);
 			m_whiteBall.fireBall(m_whiteBall.transform.forward * m_powerScalar * power);
 			m_state = State.ROLL;
 			poolCueGO.SetActive(false);

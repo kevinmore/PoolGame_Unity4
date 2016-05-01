@@ -22,8 +22,10 @@ namespace PoolKit
 				nomHumans=0;
 				nomAI=2;
 			}
-			//how many humans do we want.
-			for(int i=0; i<nomHumans; i++)
+
+
+            //how many humans do we want.
+            for (int i=0; i<nomHumans; i++)
 			{
 				spawnPlayer(i+1);
 			}

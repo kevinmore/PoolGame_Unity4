@@ -20,11 +20,11 @@ namespace PoolKit
 			m_boxCollider = gameObject.GetComponent<BoxCollider>();
 		}
 	
-		void OnDrawGizmos() {
-			// Draw a yellow sphere at the transform's position
-			Gizmos.color = gizmoColor;
-			Gizmos.DrawCube (transform.position, transform.localScale);
-		}
+// 		void OnDrawGizmos() {
+// 			// Draw a yellow sphere at the transform's position
+// 			Gizmos.color = gizmoColor;
+// 			Gizmos.DrawCube (transform.position, transform.localScale);
+// 		}
 
 		public Vector3 getPosition()
 		{

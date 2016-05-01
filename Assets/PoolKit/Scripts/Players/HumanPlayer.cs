@@ -23,7 +23,7 @@ namespace PoolKit
 		public Texture fireTexture;
 
 		//the current x-scalar.
-		private float m_xScalar;
+		private float m_xScalar = 0f;
 
 		//the layer mask
 		public LayerMask layermask;
@@ -34,14 +34,9 @@ namespace PoolKit
         public override void Awake()
         {
             base.Awake();
-
-            if (tno.isMine)
+            if (TNManager.isConnected)
             {
-                playerName = TNManager.player.name;
-            }
-            else
-            {
-                playerName = TNManager.players[0].name;
+                playerName = tno.isMine ? TNManager.player.name : TNManager.players[0].name;
             }
         }
 
@@ -49,13 +44,7 @@ namespace PoolKit
 		{
 			base.Start();
 
-			//we get the current rank and give them power based on how much power they have...
-			int currentRank = PlayerPrefs.GetInt("Rank",0);
-			m_power = power - (currentRank * powerScalarPerLevel);
-			m_xScalar = xScalar * currentRank;
-
-
-
+			m_power = power;
 		}
 		public override void OnEnable()
 		{

@@ -4,14 +4,13 @@ namespace PoolKit
 {
 	public class WhiteBall : PoolBall
 	{
-		public PoolBall ball;
 		public SphereCollider sphereCollider;
 
 		Vector3 screenPoint;
 		Vector3 offset;
 		public float dragThreshold = 20;
 		private bool m_mouseDown = false;
-		public PoolCue m_cue;
+		PoolCue m_cue;
 
 		private Constraint m_constraint;
 		private bool m_hitBall=false;
@@ -45,7 +44,6 @@ namespace PoolKit
 		{
 			base.Start();
 			sphereCollider = gameObject.GetComponent<SphereCollider>();
-			ball = gameObject.GetComponent<PoolBall>();
 			m_constraint = gameObject.GetComponent<Constraint>();
 			m_constraint.enabled=false;
 
@@ -121,7 +119,7 @@ namespace PoolKit
 			{
 
 				PoolBall ball = col.gameObject.GetComponent<PoolBall>();
-//				Debug.Log ("whiteBallHit"+ ball.name + m_hitBall);
+				Debug.Log ("whiteBallHit "+ ball.name +" "+ m_hitBall);
 
 				if(ball && m_hitBall==false)
 				{
@@ -210,7 +208,7 @@ namespace PoolKit
 		}
 		void _fireBall(Vector3 vec)
 		{
-			Debug.Log ("_fireBall"+vec);
+//			Debug.Log ("_fireBall"+vec);
 
 			m_rigidbody.isKinematic=false;
 			m_fired=true;

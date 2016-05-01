@@ -177,7 +177,7 @@ namespace PoolKit
 			{
 				hasOldBallpos=true;
 				oldBallPos= m_whiteBall.transform.position;
-				Debug.Log ("disable whiteBall" + m_whiteBall.name);
+				Debug.Log ("disable whiteBall: " + m_whiteBall.name);
 				m_whiteBall.gameObject.SetActive(false);
 			}
 
@@ -189,7 +189,7 @@ namespace PoolKit
 				{
 					m_whiteBall.transform.position = oldBallPos;
 				}
-				Debug.Log ("enable whiteBall" + m_whiteBall.name);
+				Debug.Log ("enable whiteBall: " + m_whiteBall.name);
 
 				m_whiteBall.clear();
 				m_whiteBall.setPoolCue(m_currentPlayer.getCue());

@@ -17,6 +17,7 @@ public class PoolTNManager : MonoBehaviour
     public bool persistent = false;
     public string disconnectLevel;
 
+    public GameObject uiRoot;
     public UIInput userName;
     public UILabel hintLabel;
 
@@ -27,6 +28,7 @@ public class PoolTNManager : MonoBehaviour
         {
             instance = this;
             DontDestroyOnLoad(gameObject);
+            //DontDestroyOnLoad(uiRoot);
         }
     }
 
@@ -49,10 +51,17 @@ public class PoolTNManager : MonoBehaviour
         // set player name
         if(userName.value != null)
             TNManager.playerName = userName.value;
-
-        // We want to connect to the specified destination when the button is clicked on.
-        // "OnNetworkConnect" function will be called sometime later with the result.
-        TNManager.Connect(serverIPAddress, serverPort);
+        if (TNManager.isConnected)
+        {
+            // join a channel if already connected to the server
+            JoinAvailableChannel();
+        }
+        else
+        {
+            // We want to connect to the specified destination when the button is clicked on.
+            // "OnNetworkConnect" function will be called sometime later with the result.
+            TNManager.Connect(serverIPAddress, serverPort);
+        }
     }
 
     /// <summary>
@@ -68,8 +77,7 @@ public class PoolTNManager : MonoBehaviour
         if (success)
         {
             // join a channel
-            TNManager.client.BeginSend(Packet.RequestChannelList);
-            TNManager.client.EndSend();
+            JoinAvailableChannel();
         }
         else
         {
@@ -86,6 +94,9 @@ public class PoolTNManager : MonoBehaviour
         if (!string.IsNullOrEmpty(disconnectLevel) && Application.loadedLevelName != disconnectLevel)
         {
             Application.LoadLevel(disconnectLevel);
+            uiRoot.SetActive(true);
+            NGUITools.SetActive(userName.gameObject, true);
+            NGUITools.SetActive(hintLabel.gameObject, false);
         }
     }
 
@@ -117,6 +128,9 @@ public class PoolTNManager : MonoBehaviour
         if (!string.IsNullOrEmpty(disconnectLevel) && Application.loadedLevelName != disconnectLevel)
         {
             Application.LoadLevel(disconnectLevel);
+            uiRoot.SetActive(true);
+            NGUITools.SetActive(userName.gameObject, true);
+            NGUITools.SetActive(hintLabel.gameObject, false);
         }
     }
 
@@ -146,16 +160,16 @@ public class PoolTNManager : MonoBehaviour
 
             if (playerCount < maxPlayerCountPerChannel)
             {
-                JoinChannel(channelID);
+                JoinChannelByID(channelID);
                 return;
             }
         }
 
         // should only reach here when all the channels are full
-        JoinChannel(count);
+        JoinChannelByID(count);
     }
 
-    void JoinChannel(int channelID)
+    void JoinChannelByID(int channelID)
     {
         Debug.Log("Joining Channel: " + channelID);
         TNManager.JoinChannel(channelID, null, persistent, maxPlayerCountPerChannel, null);
@@ -165,6 +179,19 @@ public class PoolTNManager : MonoBehaviour
     {
         // reaches 2 players, load level
         TNManager.LoadLevel(connectLevel);
+        uiRoot.SetActive(false);
+    }
+
+    void OnNetworkPlayerLeave(Player p)
+    {
+        // reaches 1 player, load level
+        if (!string.IsNullOrEmpty(disconnectLevel) && Application.loadedLevelName != disconnectLevel)
+        {
+            Application.LoadLevel(disconnectLevel);
+            uiRoot.SetActive(true);
+            NGUITools.SetActive(userName.gameObject, true);
+            NGUITools.SetActive(hintLabel.gameObject, false);
+        }
     }
 
     void OnJoinSucceed(string message)
@@ -180,5 +207,11 @@ public class PoolTNManager : MonoBehaviour
     void OnJoinFailed(string message)
     {
         Debug.LogError(message);
+    }
+
+    void JoinAvailableChannel()
+    {
+        TNManager.client.BeginSend(Packet.RequestChannelList);
+        TNManager.client.EndSend();
     }
 }

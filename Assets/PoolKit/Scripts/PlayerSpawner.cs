@@ -23,6 +23,8 @@ namespace PoolKit
 				nomAI=2;
 			}
 
+//             nomHumans = 1;
+//             nomAI = 1;
 
             //how many humans do we want.
             for (int i=0; i<nomHumans; i++)

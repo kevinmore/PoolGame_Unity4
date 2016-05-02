@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
+using TNet;
+
 namespace PoolKit
 {
 
@@ -12,8 +14,15 @@ namespace PoolKit
 		}
 		public override  void enterPocket(PoolBall ball)
 		{
-			enterPocketRPC(ball.name,m_playerTurn);
-		}
+            if (tno != null)
+            {
+                tno.Send("enterPocketRPC", Target.All, ball.name, m_playerTurn);
+            }
+            else
+                enterPocketRPC(ball.name, m_playerTurn);
+        }
+
+        [RFC]
 		void enterPocketRPC(string name,int playerTurn)
 		{
 			m_playerTurn = playerTurn;
@@ -49,6 +58,7 @@ namespace PoolKit
 			}
 		}
 
+        [RFC]
 		public override void changeTurnRPC(bool foul,
 		                                   int turn)
 		{

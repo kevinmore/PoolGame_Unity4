@@ -1,9 +1,11 @@
 ﻿using UnityEngine;
 using System.Collections;
+using TNet;
+
 namespace PoolKit
 {
 	//we are either going to use a 8 ball or 9 ball gamescript depending on which game we are playing. 
-	public class PoolGameScript : MonoBehaviour 
+	public class PoolGameScript : TNBehaviour 
 	{
 		//the ref of pool balls
 		protected PoolBall[] m_balls;
@@ -163,6 +165,7 @@ namespace PoolKit
 			}
 		}
 
+        [RFC]
 		public virtual void changeTurnRPC(bool foul,int turn)
 		{
 			m_foul = foul;
@@ -208,9 +211,13 @@ namespace PoolKit
 			yield return new WaitForSeconds(waitTime);
 			if(m_gameover==false)
 			{
-				changeTurnRPC(m_foul,m_playerTurn);
-
-			}
+                if (tno != null)
+                {
+                    tno.Send("changeTurnRPC", Target.All, m_foul, m_playerTurn);
+                }
+                else
+                    changeTurnRPC(m_foul, m_playerTurn);
+            }
 
 		}
 		void checkDoneRolling()

@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using TNet;
 namespace PoolKit
 {
 	//the base play for our bowling characters -- wether it be human or AI
@@ -52,7 +53,7 @@ namespace PoolKit
 			m_ball = (WhiteBall)GameObject.FindObjectOfType(typeof(WhiteBall));
 
 			m_myTurn = playerIndex==0;
-			onPlayerTurn(0);
+			//onPlayerTurn(0);
 		}
 		
 
@@ -139,9 +140,16 @@ namespace PoolKit
 		}
 		public virtual void onPlayerTurn(int pi)
 		{
-			myTurnRPC(pi);
-		}
-		public void myTurnRPC(int pi)
+            if (tno != null)
+            {
+                tno.Send("myTurnRPC", Target.All, pi);
+            }
+            else
+                myTurnRPC(pi);
+        }
+
+        [RFC]
+        public void myTurnRPC(int pi)
 		{
 			if(pi==playerIndex)
 			{

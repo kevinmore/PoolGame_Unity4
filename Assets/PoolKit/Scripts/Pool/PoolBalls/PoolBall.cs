@@ -1,9 +1,11 @@
 ﻿using UnityEngine;
 using System.Collections;
+using TNet;
+
 namespace PoolKit
 {
 
-	public class PoolBall :MonoBehaviour 
+	public class PoolBall :TNBehaviour 
 	{
 		public enum BallType
 		{
@@ -168,6 +170,12 @@ namespace PoolKit
 			return m_state == State.DONE;
 		}
 
+        [RFC]
+        void OnSyncBallTransform(Transform t)
+        {
+            transform.position = t.position;
+            transform.rotation = t.rotation;
+        }
 
 	}
 }

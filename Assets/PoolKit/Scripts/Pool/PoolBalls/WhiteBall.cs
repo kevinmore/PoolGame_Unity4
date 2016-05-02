@@ -119,7 +119,7 @@ namespace PoolKit
 			{
 
 				PoolBall ball = col.gameObject.GetComponent<PoolBall>();
-				Debug.Log ("whiteBallHit "+ ball.name +" "+ m_hitBall);
+				//Debug.Log ("whiteBallHit "+ ball.name +" "+ m_hitBall);
 
 				if(ball && m_hitBall==false)
 				{
@@ -203,7 +203,6 @@ namespace PoolKit
 		//lets fire the ball foreveryone!
 		public void fireBallRPC(Vector3 vec)
 		{
-
 			_fireBall(vec);
 		}
 		void _fireBall(Vector3 vec)

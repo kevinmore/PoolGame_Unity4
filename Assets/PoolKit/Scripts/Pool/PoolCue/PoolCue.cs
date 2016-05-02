@@ -1,11 +1,11 @@
 ﻿using UnityEngine;
 using System.Collections;
-
+using TNet;
 
 namespace PoolKit
 {
 	//the pool cues that you should use should depend on which game you are using -- 8 ball or 9 ball the only real difference is it will check if the ball is okay or not.
-	public class PoolCue : MonoBehaviour {
+	public class PoolCue : TNBehaviour {
 		//our line renderer
 		public LineRenderer lineRenderer;
 
@@ -152,8 +152,15 @@ namespace PoolKit
 		
 		void onBallStop()
 		{
-			ballStopRPC();
-		}
+            if (tno != null)
+            {
+                tno.Send("ballStopRPC", Target.All);
+            }
+            else
+                ballStopRPC();
+        }
+
+        [RFC]
 		public virtual void ballStopRPC()
 		{
 			m_state = State.ROTATE;
@@ -167,14 +174,16 @@ namespace PoolKit
 			transform.localRotation = m_initalRot;
 			transform.localPosition = m_initalPos;
 		}
-		public virtual  void requestRotateRPC(){m_requestRotate=true;}
-		public void requestRotate(){
-			requestRotateRPC();
-		}
-		public virtual void requestFireRPC(){m_requestFire=true;}
-		public  void requestFire(){
-			requestFireRPC();
-		}
+		[RFC] public virtual  void requestRotateRPC(){m_requestRotate=true;}
+		public void requestRotate()
+        {
+            tno.Send("requestRotateRPC", Target.All);
+        }
+        [RFC] public virtual void requestFireRPC(){m_requestFire=true;}
+		public  void requestFire()
+        {
+            tno.Send("requestFireRPC", Target.All);
+        }
 		void Update () {
 			if(m_state==State.ROTATE)
 			{
@@ -204,10 +213,16 @@ namespace PoolKit
 
 		public void fireBall()
 		{
-			fireBallRPC();
-		}
+            if (tno != null)
+            {
+                tno.Send("fireBallRPC", Target.All);
+            }
+            else
+                fireBallRPC();
+        }
 
-		public void fireBallRPC()
+        [RFC]
+        public void fireBallRPC()
 		{
 			m_requestFire=false;
 			if(GetComponent<AudioSource>())

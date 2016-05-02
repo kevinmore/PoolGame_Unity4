@@ -20,7 +20,7 @@ public class PoolTNManager : MonoBehaviour
     public GameObject uiRoot;
     public UIInput userName;
     public UILabel hintLabel;
-
+    public UIButton findGameButton;
 
     void Awake()
     {
@@ -62,6 +62,8 @@ public class PoolTNManager : MonoBehaviour
             // "OnNetworkConnect" function will be called sometime later with the result.
             TNManager.Connect(serverIPAddress, serverPort);
         }
+
+        NGUITools.SetActive(findGameButton.gameObject, false);
     }
 
     /// <summary>

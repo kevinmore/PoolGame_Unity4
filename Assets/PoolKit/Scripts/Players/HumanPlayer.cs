@@ -93,20 +93,27 @@ namespace PoolKit
 				//m_cue.requestFire();
 			}
 		}
-		void Update()
+
+        bool IsMyTurn()
+        {
+            HumanPlayer player = PoolGameScript.Instance.CurrentPlayer as HumanPlayer;
+            return player.m_netWorkPlayerID == tno.ownerID && tno.isMine;
+        }
+
+        void Update()
 		{
 			if(!m_myTurn || m_gameOver)
 			{
 				return;
 			}
 
-			rotateBall();
-		}
+            if (tno.isMine)
+            {
+                rotateBall();
+            }
+        }
 		void rotateBall()
 		{
-			RaycastHit rch;
-
-
 			float mx = Input.GetAxis("Mouse X");
 
 			Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);

@@ -118,13 +118,20 @@ namespace PoolKit
 		{
 			m_powerScalar = power * 0.01f;
 		}
-		public void OnGUI()
+
+        bool IsMyTurn()
+        {
+            HumanPlayer player = PoolGameScript.Instance.CurrentPlayer as HumanPlayer;
+            return player.m_netWorkPlayerID == tno.ownerID && tno.isMine;
+        }
+
+        public void OnGUI()
 		{
 			//if we are in the rotate state and not in the menu scene.
 			if(m_state==State.ROTATE && Application.loadedLevel>0 && PoolGameScript.Instance.CurrentPlayer != null)
 			{
                 HumanPlayer player = PoolGameScript.Instance.CurrentPlayer as HumanPlayer;
-                if (player.m_netWorkPlayerID == tno.ownerID && tno.isMine)
+                if (IsMyTurn())
                 {
                     GUI.skin = skin0;
                     m_powerScalar = GUI.HorizontalSlider(new Rect(20, Screen.height - 32, 400, 32), m_powerScalar, minPowerScalar, 1f);
@@ -194,7 +201,7 @@ namespace PoolKit
 					poolCueGO.transform.localPosition = pos;
 				}
 
-				if(m_requestRotate)
+				if(m_requestRotate && IsMyTurn())
 				{
 					handleRotate();
 					m_requestRotate=false;

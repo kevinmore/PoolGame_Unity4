@@ -95,18 +95,12 @@ namespace PoolKit
 		}
 		void Update()
 		{
-			if(m_myTurn==false || m_gameOver)
+			if(!m_myTurn || m_gameOver)
 			{
 				return;
 			}
 
 			rotateBall();
-			if(Input.GetKeyDown(KeyCode.Space))
-			{
-				Debug.Log ("FIRE BALL" + Time.time);
-				m_cue.requestFire();
-			}
-
 		}
 		void rotateBall()
 		{

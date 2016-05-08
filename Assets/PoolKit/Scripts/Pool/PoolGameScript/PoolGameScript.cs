@@ -45,9 +45,14 @@ namespace PoolKit
 
 		//a ref to the current play
 		protected PoolKit.BasePlayer m_currentPlayer;
+        public PoolKit.BasePlayer CurrentPlayer
+        {
+            get { return m_currentPlayer; }
+            set { m_currentPlayer = value; }
+        }
 
-		//the minimum ball speed before the ball is considred stopepd
-		public float minBallSpeed = 0.2f;
+        //the minimum ball speed before the ball is considred stopepd
+        public float minBallSpeed = 0.2f;
 
 		//are in we in gameover state yet
 		protected bool m_gameover=false;
@@ -58,8 +63,17 @@ namespace PoolKit
 		//do we have a foul
 		protected bool m_foul=false;
 
+        static public PoolGameScript Instance;
 
-		void Start () {
+        void Awake()
+        {
+            if (Instance == null)
+            {
+                Instance = this;
+            }
+        }
+
+        void Start () {
 
 			m_balls = (PoolBall[])GameObject.FindObjectsOfType(typeof(PoolBall));
 			m_whiteBall = (WhiteBall)GameObject.FindObjectOfType(typeof(WhiteBall));
@@ -68,31 +82,37 @@ namespace PoolKit
 			{
 				m_balls[i].minSpeed = minBallSpeed;
 			}
-			onGameStart();
 		}
+
 		void onGameStart()
 		{
-			PoolKit.BasePlayer[] players = (PoolKit.BasePlayer[])GameObject.FindObjectsOfType(typeof(PoolKit.BasePlayer));
+            BasePlayer[] players = (BasePlayer[])FindObjectsOfType(typeof(BasePlayer));
 			m_players = new PoolKit.BasePlayer[players.Length];
-//			Debug.Log ("onGameStart " + players.Length);
 			if(m_players.Length>1)
 			{
 				for(int i=0; i<players.Length; i++)
 				{
-					int pi = players[i].playerIndex;
+                    // player index can only be 0 - 1
+					int playerIndex = players[i].playerIndex;
 
-					m_players[pi] = players[i];
+                    // makes sure the index mapping
+					m_players[playerIndex] = players[i];
 				}
 			}else{
 				m_players  = players;
-			}//=
-			PoolKit.BaseGameManager.playersTurn(0);
-		}
+			}
+
+            // player 0 plays first
+            if (TNManager.isHosting)
+            {
+                BaseGameManager.playersTurn(0);
+            }
+        }
 		void OnEnable()
 		{
 			PoolKit.BaseGameManager.onFireBall += onFireBall;
 			PoolKit.BaseGameManager.onBallEnterPocket	+= onEnterPocket;
-			PoolKit.BaseGameManager.onWhiteBallHitBall += onWhiteBallHitWall;
+			PoolKit.BaseGameManager.onWhiteBallHitBall += onWhiteBallHitBall;
 			PoolKit.BaseGameManager.onGameStart += onGameStart;
 			BaseGameManager.onIsMyTurn += onIsMyTurn;
 
@@ -101,7 +121,7 @@ namespace PoolKit
 		{
 			PoolKit.BaseGameManager.onFireBall -= onFireBall;
 			PoolKit.BaseGameManager.onBallEnterPocket	-= onEnterPocket;
-			PoolKit.BaseGameManager.onWhiteBallHitBall -= onWhiteBallHitWall;
+			PoolKit.BaseGameManager.onWhiteBallHitBall -= onWhiteBallHitBall;
 			BaseGameManager.onIsMyTurn -= onIsMyTurn;
 			PoolKit.BaseGameManager.onGameStart-= onGameStart;
 
@@ -111,7 +131,7 @@ namespace PoolKit
 			return m_currentPlayer.playerIndex == playerID;
 		}
 
-		void onWhiteBallHitWall(bool hitBall,PoolBall ball)
+		void onWhiteBallHitBall(bool hitBall,PoolBall ball)
 		{
 			//its our first hit
 			if(hitBall==false)
@@ -280,5 +300,6 @@ namespace PoolKit
 					m_balls[i].hitWall=false;
 			}
 		}
+
 	}
 }

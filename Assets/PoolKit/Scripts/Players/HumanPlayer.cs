@@ -31,12 +31,22 @@ namespace PoolKit
 		//the style to use
 		public GUIStyle style0;
 
+        public int m_netWorkPlayerID;
+
         public override void Awake()
         {
             base.Awake();
             if (TNManager.isConnected)
             {
+                m_netWorkPlayerID = tno.ownerID;
                 playerName = tno.isMine ? TNManager.player.name : TNManager.players[0].name;
+
+                // check if 2 players are all created
+                int playersCount = FindObjectsOfType(typeof(HumanPlayer)).Length;
+                if (playersCount == 2)
+                {
+                    BaseGameManager.startGame();
+                }
             }
         }
 
@@ -67,7 +77,7 @@ namespace PoolKit
 		}
 		void OnGUI()
 		{
-			if(m_myTurn)
+			if(m_myTurn && tno.isMine)
 			{
 				Rect r = new Rect(Screen.width-200,Screen.height-70,64,64);
 				if(GUI.Button(r,fireTexture,style0) && m_ball.isRolling()==false)

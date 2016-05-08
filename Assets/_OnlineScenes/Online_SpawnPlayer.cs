@@ -31,7 +31,7 @@ public class Online_SpawnPlayer : MonoBehaviour
         int otherId = TNManager.players[0].id;
         TNManager.Create(TNManager.playerID < otherId ? player1 : player2, persistent);
 
-        BaseGameManager.startGame();
+        
         Destroy(gameObject);
     }
 }

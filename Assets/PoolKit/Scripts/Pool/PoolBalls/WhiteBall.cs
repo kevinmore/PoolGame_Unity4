@@ -173,8 +173,6 @@ namespace PoolKit
 
 		}
 
-
-
 		public void stopBall()
 		{
 			transform.rotation = Quaternion.identity;
@@ -216,7 +214,6 @@ namespace PoolKit
 			m_rigidbody.AddTorque(ballTorque);
 			m_state = State.ROLL;
 			PoolKit.BaseGameManager.fireBall();
-
 		}
 
 	}

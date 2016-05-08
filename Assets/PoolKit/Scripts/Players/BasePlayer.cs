@@ -51,15 +51,13 @@ namespace PoolKit
 		public virtual void Start()
 		{
 			m_ball = (WhiteBall)GameObject.FindObjectOfType(typeof(WhiteBall));
-
-			m_myTurn = playerIndex==0;
-			//onPlayerTurn(0);
 		}
 		
 
 		public void onGameStart()
 		{
 			m_myTurn = playerIndex==0;
+            Debug.Log("I'm player " + playerName + " is my turn? " + m_myTurn);
 		}
 
 		public virtual void OnEnable()
@@ -153,16 +151,18 @@ namespace PoolKit
 		{
 			if(pi==playerIndex)
 			{
-
-				onMyTurn();
+                PoolGameScript.Instance.CurrentPlayer = this;
 				m_fired=false;
 				m_myTurn = true;
-			}else{
-				notMyTurn();
+                onMyTurn();
+            }
+            else
+            {
 				m_myTurn = false;
-			}
+                notMyTurn();
+            }
 
-		}
+        }
 		void onGameOver(string vic)
 		{
 			m_gameOver=true;

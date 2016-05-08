@@ -85,9 +85,7 @@ namespace PoolKit
 			
 			m_initalPos = transform.localPosition;
 			m_initalRot = transform.localRotation;
-			m_whiteBall =transform.parent.GetComponentInChildren<WhiteBall>();
-			//(WhiteBall) GameObject.FindObjectOfType(typeof(WhiteBall));
-			
+			m_whiteBall = GameObject.Find("WhiteBall").GetComponent<WhiteBall>();
 			
 			GameObject go = new GameObject("reflect");
 			if(go)
@@ -109,13 +107,12 @@ namespace PoolKit
 		public void OnEnable()
 		{
 			PoolKit.BaseGameManager.onBallStop += onBallStop;
-			PoolKit.BaseGameManager.onGameStart += onStartGame;
-			//PoolKit.BaseGameManager.onBallHitBall += onBallHitBall;
+			PoolKit.BaseGameManager.onGameStart += onGameStart;
 		}
 		public void OnDisable()
 		{
 			PoolKit.BaseGameManager.onBallStop -= onBallStop;
-			PoolKit.BaseGameManager.onGameStart -= onStartGame;
+			PoolKit.BaseGameManager.onGameStart -= onGameStart;
 		}
 		public void setPower(float power)
 		{
@@ -124,17 +121,18 @@ namespace PoolKit
 		public void OnGUI()
 		{
 			//if we are in the rotate state and not in the menu scene.
-
-
-			if(m_state==State.ROTATE && Application.loadedLevel>0)
+			if(m_state==State.ROTATE && Application.loadedLevel>0 && PoolGameScript.Instance.CurrentPlayer != null)
 			{
-				GUI.skin = skin0;
-				m_powerScalar = GUI.HorizontalSlider(new Rect(20,Screen.height-32,400,32),m_powerScalar,minPowerScalar,1f);
-
+                HumanPlayer player = PoolGameScript.Instance.CurrentPlayer as HumanPlayer;
+                if (player.m_netWorkPlayerID == tno.ownerID && tno.isMine)
+                {
+                    GUI.skin = skin0;
+                    m_powerScalar = GUI.HorizontalSlider(new Rect(20, Screen.height - 32, 400, 32), m_powerScalar, minPowerScalar, 1f);
+                }
 			}
 		}
 
-		public void onStartGame()
+		public void onGameStart()
 		{
 			m_whiteBall =transform.parent.GetComponentInChildren<WhiteBall>();
 			if(m_whiteBall)
@@ -177,7 +175,8 @@ namespace PoolKit
 		[RFC] public virtual  void requestRotateRPC(){m_requestRotate=true;}
 		public void requestRotate()
         {
-            tno.Send("requestRotateRPC", Target.All);
+            requestRotateRPC();
+            //tno.Send("requestRotateRPC", Target.All);
         }
         [RFC] public virtual void requestFireRPC(){m_requestFire=true;}
 		public  void requestFire()

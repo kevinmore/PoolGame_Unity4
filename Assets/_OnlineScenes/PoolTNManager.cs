@@ -7,7 +7,7 @@ using System.Net;
 
 public class PoolTNManager : MonoBehaviour
 {
-    static public PoolTNManager instance;
+    static public PoolTNManager Instance;
     public string serverIPAddress = "52.58.44.209";
     public int serverPort = 5127;
 
@@ -24,9 +24,9 @@ public class PoolTNManager : MonoBehaviour
 
     void Awake()
     {
-        if (instance == null)
+        if (Instance == null)
         {
-            instance = this;
+            Instance = this;
             DontDestroyOnLoad(gameObject);
             //DontDestroyOnLoad(uiRoot);
         }
@@ -51,6 +51,7 @@ public class PoolTNManager : MonoBehaviour
         // set player name
         if(userName.value != null)
             TNManager.playerName = userName.value;
+
         if (TNManager.isConnected)
         {
             // join a channel if already connected to the server

@@ -30,16 +30,16 @@ namespace PoolKit
 			}
 		}
 
-		//we want to spawn the scene.
-		public delegate void OnSpawnPlayers(int nomHumans, int nomAI);
-		public static event OnSpawnPlayers onSpawnPlayers;
-		public static void spawnPlayers(int nomHumans, int nomAI)
-		{
-			if(onSpawnPlayers!=null)
-			{
-				onSpawnPlayers(nomHumans, nomAI);
-			}
-		}
+// 		//we want to spawn the scene.
+// 		public delegate void OnSpawnPlayers(int nomHumans, int nomAI);
+// 		public static event OnSpawnPlayers onSpawnPlayers;
+// 		public static void spawnPlayers(int nomHumans, int nomAI)
+// 		{
+// 			if(onSpawnPlayers!=null)
+// 			{
+// 				onSpawnPlayers(nomHumans, nomAI);
+// 			}
+// 		}
 
 		//when we want to connect to the network using photon.
 		public delegate void OnConnect(bool offlineMode, int levelToLoad, int nomPlayers,int nomAI);
@@ -123,16 +123,16 @@ namespace PoolKit
 		}
 
 
-		//called when a ball becomes active
-		public delegate void OnSetActiveBall(Transform t);
-		public static event OnSetActiveBall onSetActiveBall;
-		public static void setActiveBall(Transform t)
-		{
-			if(onSetActiveBall!=null)
-			{
-				onSetActiveBall(t);	
-			}
-		}
+// 		//called when a ball becomes active
+// 		public delegate void OnSetActiveBall(Transform t);
+// 		public static event OnSetActiveBall onSetActiveBall;
+// 		public static void setActiveBall(Transform t)
+// 		{
+// 			if(onSetActiveBall!=null)
+// 			{
+// 				onSetActiveBall(t);	
+// 			}
+// 		}
 
 		//called when the player rests
 		public delegate void OnResetPlayer(int playerIndex);

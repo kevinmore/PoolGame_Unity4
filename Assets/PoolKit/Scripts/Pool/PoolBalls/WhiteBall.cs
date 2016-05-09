@@ -76,7 +76,6 @@ namespace PoolKit
 				GetComponent<Collider>().enabled=true;
 			}
 		}
-		
 		void OnMouseDrag()
 		{
 			if(foul && m_state!=State.ROLL)
@@ -195,26 +194,18 @@ namespace PoolKit
 
 		public void fireBall(Vector3 vec)
 		{
-			_fireBall(vec);
-		}
-		
-		//lets fire the ball foreveryone!
-		public void fireBallRPC(Vector3 vec)
-		{
-			_fireBall(vec);
-		}
-		void _fireBall(Vector3 vec)
-		{
-//			Debug.Log ("_fireBall"+vec);
+            if (!TNManager.isHosting)
+            {
+                //return;
+            }
 
-			m_rigidbody.isKinematic=false;
-			m_fired=true;
-			m_slowTime=0;
-			m_rigidbody.AddForce( vec, ForceMode.Impulse);
-			m_rigidbody.AddTorque(ballTorque);
-			m_state = State.ROLL;
-			PoolKit.BaseGameManager.fireBall();
-		}
+            // free all the balls, including this white ball
+            PoolKit.BaseGameManager.fireBall();
 
+            m_fired = true;
+            m_slowTime = 0;
+            m_rigidbody.AddForce(vec, ForceMode.Impulse);
+            m_rigidbody.AddTorque(ballTorque);
+        }
 	}
 }

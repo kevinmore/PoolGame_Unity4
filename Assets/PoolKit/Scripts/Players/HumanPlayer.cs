@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
+using TNet;
+
 namespace PoolKit
 {
 	//our human player script
@@ -146,11 +148,25 @@ namespace PoolKit
 				{
 					if(m_ball)
 					{
-						m_ball.transform.Rotate(new Vector3(0,mx * rotationSpeed * Time.deltaTime,0));
+						//m_ball.transform.Rotate(new Vector3(0,mx * rotationSpeed * Time.deltaTime,0));
+                        tno.Send("RotateBallRFC", Target.All, mx * rotationSpeed * Time.deltaTime);
 					}
-					m_cue.requestRotate();
+					//m_cue.requestRotate();
+                    tno.Send("RequestRotateRFC", Target.All);
 				}
 			}
 		}	
-	}
+
+        [RFC]
+        void RotateBallRFC(float amount)
+        {
+            m_ball.transform.Rotate(new Vector3(0, amount, 0));
+        }
+
+        [RFC]
+        void RequestRotateRFC()
+        {
+            m_cue.requestRotate();
+        }
+    }
 }

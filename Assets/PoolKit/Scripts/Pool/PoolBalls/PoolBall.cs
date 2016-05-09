@@ -129,17 +129,19 @@ namespace PoolKit
 					{
 						m_state = State.DONE;
 					}
-
 				}
-			}
+                if (TNManager.isHosting)
+                {
+                    //tno.Send("OnSyncBallTransform", Target.Others, transform);
+                }
+            }
 		}
-
 
 		void FixedUpdate()
 		{
 			Speed = (transform.position - lastPosition).magnitude / Time.deltaTime * 3.6f;
 			lastPosition = transform.position;
-		}
+        }
 
 		
 		public void enterPocket()
@@ -175,6 +177,13 @@ namespace PoolKit
         {
             transform.position = t.position;
             transform.rotation = t.rotation;
+        }
+
+        [RFC]
+        void OnSyncBallVelocity(Vector3 linearV, Vector3 angularV)
+        {
+            m_rigidbody.velocity = linearV;
+            m_rigidbody.angularVelocity = angularV;
         }
 
 	}

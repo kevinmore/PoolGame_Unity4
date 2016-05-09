@@ -52,12 +52,10 @@ namespace PoolKit
 		{
 			m_ball = (WhiteBall)GameObject.FindObjectOfType(typeof(WhiteBall));
 		}
-		
 
 		public void onGameStart()
 		{
 			m_myTurn = playerIndex==0;
-            Debug.Log("I'm player " + playerName + " is my turn? " + m_myTurn);
 		}
 
 		public virtual void OnEnable()
@@ -162,8 +160,9 @@ namespace PoolKit
                 notMyTurn();
             }
 
+            Debug.Log("I'm player " + playerName + " is my turn? " + m_myTurn);
         }
-		void onGameOver(string vic)
+        void onGameOver(string vic)
 		{
 			m_gameOver=true;
 		}

@@ -185,11 +185,11 @@ namespace PoolKit
             requestRotateRPC();
             //tno.Send("requestRotateRPC", Target.All);
         }
-        [RFC] public virtual void requestFireRPC(){m_requestFire=true;}
 		public  void requestFire()
         {
-            tno.Send("requestFireRPC", Target.All);
+            m_requestFire = true;
         }
+
 		void Update () {
 			if(m_state==State.ROTATE)
 			{
@@ -219,11 +219,11 @@ namespace PoolKit
 
 		public void fireBall()
 		{
-            if (tno != null)
-            {
-                tno.Send("fireBallRPC", Target.All);
-            }
-            else
+             if (tno != null)
+             {
+                 tno.Send("fireBallRPC", Target.All);
+             }
+             else
                 fireBallRPC();
         }
 
@@ -238,14 +238,12 @@ namespace PoolKit
 
 			//lets set the balls target and the target position. When the white ball hits the first ball we will set the ball to point at the target.
 			m_whiteBall.setTarget(m_targetBall,m_targetPos);
+            m_whiteBall.fireBall(m_whiteBall.transform.forward * m_powerScalar * power);
 
-//			Debug.Log ("FIRE BALL" + m_whiteBall.name);
-			m_whiteBall.fireBall(m_whiteBall.transform.forward * m_powerScalar * power);
-			m_state = State.ROLL;
+            m_state = State.ROLL;
 			poolCueGO.SetActive(false);
 			
 			transform.parent = null;
-
 		}
 
 		public void setTarget(PoolBall ball, Vector3 p2)

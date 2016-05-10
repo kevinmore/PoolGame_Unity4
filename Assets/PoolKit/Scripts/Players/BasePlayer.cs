@@ -53,18 +53,12 @@ namespace PoolKit
 			m_ball = (WhiteBall)GameObject.FindObjectOfType(typeof(WhiteBall));
 		}
 
-		public void onGameStart()
-		{
-			m_myTurn = playerIndex==0;
-		}
-
 		public virtual void OnEnable()
 		{
 			BaseGameManager.onGameOver 		+= onGameOver;
 			BaseGameManager.onPlayerTurn 	+= onPlayerTurn;
 			BaseGameManager.onResetPlayer 	+= onResetPlayer;
 			BaseGameManager.onSetStripesOrSolids += onSetStripesOrSolids;
-			BaseGameManager.onGameStart 		+= onGameStart;
 		}
 		public virtual void OnDisable()
 		{
@@ -72,8 +66,6 @@ namespace PoolKit
 			BaseGameManager.onGameOver 		-= onGameOver;
 			BaseGameManager.onPlayerTurn 	-= onPlayerTurn;
 			BaseGameManager.onResetPlayer 	-= onResetPlayer;
-			BaseGameManager.onGameStart 		-= onGameStart;
-
 		}
 		public void onSetStripesOrSolids(int pi, bool greater8)
 		{
@@ -122,9 +114,6 @@ namespace PoolKit
 		}
 
 		
-		public virtual void notMyTurn()
-		{
-		}
 		public virtual void onMyTurn()
 		{
 			if(m_cue)
@@ -157,10 +146,10 @@ namespace PoolKit
             else
             {
 				m_myTurn = false;
-                notMyTurn();
             }
 
             Debug.Log("I'm player " + playerName + " is my turn? " + m_myTurn);
+            DebugLabel.Instance.ShowMsg("I'm player " + playerName + " is my turn? " + m_myTurn);
         }
         void onGameOver(string vic)
 		{

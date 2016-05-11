@@ -23,14 +23,11 @@ namespace PoolKit
 		protected PoolGameScript m_gamescript;
 
 
-		public void Start()
-		{
-			onGameStart();
-		}
 		public void onGameStart()
 		{
 			startGame();
 		}
+
 		public virtual void startGame () {
 			PoolBall[] balls = (PoolBall[])GameObject.FindObjectsOfType(typeof(PoolBall));
 			m_nomBalls = balls.Length;

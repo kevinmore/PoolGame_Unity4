@@ -77,9 +77,9 @@ namespace PoolKit
 				string str = name.Substring(4,name.Length-4);;
 				ballIndex = int.Parse(str);
 			}
-		}
-		//point the ball at the target
-		public void pointAtTarget(Vector3 target)
+        }
+        //point the ball at the target
+        public void pointAtTarget(Vector3 target)
 		{
 			Vector3 vel = m_rigidbody.velocity;
 			float mag = vel.magnitude;
@@ -99,7 +99,6 @@ namespace PoolKit
 			{
 				PoolKit.BaseGameManager.ballHitBall(GetComponent<Rigidbody>().velocity);
 			}
-			
 		}
 
 
@@ -115,8 +114,12 @@ namespace PoolKit
 		}
 		public void onFireBall()
 		{
-			m_rigidbody.isKinematic=false;
-			m_state = State.ROLL;
+            // only the server gets dynamic state
+            if (TNManager.isHosting)
+            {
+                m_rigidbody.isKinematic = false;
+                m_state = State.ROLL;
+            }
 		}
 		public void Update()
 		{
@@ -130,20 +133,19 @@ namespace PoolKit
 						m_state = State.DONE;
 					}
 				}
-                if (TNManager.isHosting)
-                {
-                    //tno.Send("OnSyncBallTransform", Target.Others, transform);
-                }
             }
-		}
 
-		void FixedUpdate()
+            if (TNManager.isHosting && TNManager.players.Count > 0 && tno != null)
+                tno.Send("SyncBallTransformRFC", Target.Others, transform.position, transform.rotation);
+        }
+
+        void FixedUpdate()
 		{
 			Speed = (transform.position - lastPosition).magnitude / Time.deltaTime * 3.6f;
 			lastPosition = transform.position;
         }
 
-		
+
 		public void enterPocket()
 		{
 			if(m_rigidbody)
@@ -165,26 +167,21 @@ namespace PoolKit
 			m_rigidbody.angularVelocity = Vector3.zero;
 			m_rigidbody.velocity = Vector3.zero;
 			m_rigidbody.isKinematic=true;
-		}
 
-		public bool isDoneRolling()
+            // sync one more time
+            //tno.Send("SyncBallTransformRFC", Target.Others, transform.position, transform.rotation);
+        }
+
+        public bool isDoneRolling()
 		{
 			return m_state == State.DONE;
 		}
 
         [RFC]
-        void OnSyncBallTransform(Transform t)
+        void SyncBallTransformRFC(Vector3 position, Quaternion rotation)
         {
-            transform.position = t.position;
-            transform.rotation = t.rotation;
+            transform.position = position;
+            transform.rotation = rotation;
         }
-
-        [RFC]
-        void OnSyncBallVelocity(Vector3 linearV, Vector3 angularV)
-        {
-            m_rigidbody.velocity = linearV;
-            m_rigidbody.angularVelocity = angularV;
-        }
-
 	}
 }

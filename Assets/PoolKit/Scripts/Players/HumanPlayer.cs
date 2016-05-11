@@ -33,14 +33,12 @@ namespace PoolKit
 		//the style to use
 		public GUIStyle style0;
 
-        public int m_netWorkPlayerID;
 
         public override void Awake()
         {
             base.Awake();
             if (TNManager.isConnected)
             {
-                m_netWorkPlayerID = tno.ownerID;
                 playerName = tno.isMine ? TNManager.player.name : TNManager.players[0].name;
 
                 // check if 2 players are all created
@@ -95,12 +93,6 @@ namespace PoolKit
 				//m_cue.requestFire();
 			}
 		}
-
-        bool IsMyTurn()
-        {
-            HumanPlayer player = PoolGameScript.Instance.CurrentPlayer as HumanPlayer;
-            return player.m_netWorkPlayerID == tno.ownerID && tno.isMine;
-        }
 
         void Update()
 		{

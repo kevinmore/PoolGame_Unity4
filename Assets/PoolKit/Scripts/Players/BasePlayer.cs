@@ -149,7 +149,7 @@ namespace PoolKit
             }
 
             Debug.Log("I'm player " + playerName + " is my turn? " + m_myTurn);
-            DebugLabel.Instance.ShowMsg("I'm player " + playerName + " is my turn? " + m_myTurn);
+            //DebugLabel.Instance.ShowMsg("I'm player " + playerName + " is my turn? " + m_myTurn);
         }
         void onGameOver(string vic)
 		{

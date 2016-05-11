@@ -69,55 +69,69 @@ namespace PoolKit
 		//handle the fouls for 8-ball.
 		public override bool handleFouls()
 		{
-			bool fouls = false;
-			int wallHit = 0;
-			for(int i=0; i<m_balls.Length; i++)
-			{
-				if(m_balls[i] && m_balls[i].pocketed==false && m_balls[i].hitWall)
-				{
-					wallHit++;
-				}
-			}
+            if (tno != null)
+            {
+                tno.Send("handleFoulsRFC", Target.All);
+            }
+            else
+                handleFoulsRFC();
 
-			string foulSTR = null;
-
-			if(m_whiteEnteredPocket)
-			{
-				PoolKit.BaseGameManager.showTitleCard("FOUL - White ball pocketed!");
-
-				fouls=true;
-			}
-			
-			if(m_foul)
-			{
-				PoolKit.BaseGameManager.showTitleCard(m_foulSTR);
-				
-			}
-
-			if(m_break==false)
-			{
-				if(wallHit<4)
-				{
-					//it was a foul ball.
-					m_break = true;
-					PoolKit.BaseGameManager.showTitleCard("FOUL - At least 4 balls must hit the wall after a break!");
-					fouls=true;
-				}else{
-					m_break=true;
-				}
-			}
-			
-			if(wallHit==0 && m_ballsPocketed==0)
-			{
-				PoolKit.BaseGameManager.showTitleCard("FOUL - No balls hit wall, or were pocketed!");
-				fouls=true;
-				
-			}
-			m_foul = fouls;
-			
-			
-			clearWallHit();
-			return fouls;
+            return m_foul;
 		}
+
+        [RFC]
+        void handleFoulsRFC()
+        {
+            bool fouls = false;
+            int wallHit = 0;
+            for (int i = 0; i < m_balls.Length; i++)
+            {
+                if (m_balls[i] && m_balls[i].pocketed == false && m_balls[i].hitWall)
+                {
+                    wallHit++;
+                }
+            }
+
+            string foulSTR = null;
+
+            if (m_whiteEnteredPocket)
+            {
+                PoolKit.BaseGameManager.showTitleCard("FOUL - White ball pocketed!");
+
+                fouls = true;
+            }
+
+            if (m_foul)
+            {
+                PoolKit.BaseGameManager.showTitleCard(m_foulSTR);
+
+            }
+
+            if (m_break == false)
+            {
+                if (wallHit < 4)
+                {
+                    //it was a foul ball.
+                    m_break = true;
+                    PoolKit.BaseGameManager.showTitleCard("FOUL - At least 4 balls must hit the wall after a break!");
+                    fouls = true;
+                }
+                else
+                {
+                    m_break = true;
+                }
+            }
+
+            if (wallHit == 0 && m_ballsPocketed == 0)
+            {
+                PoolKit.BaseGameManager.showTitleCard("FOUL - No balls hit wall, or were pocketed!");
+                fouls = true;
+
+            }
+            m_foul = fouls;
+
+
+            clearWallHit();
+        }
 	}
 }

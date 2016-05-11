@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
+using TNet;
+
 namespace PoolKit
 {
 	public class WhiteBall : PoolBall
@@ -50,7 +52,6 @@ namespace PoolKit
 			//m_cue = (PoolCue)GameObject.FindObjectOfType(typeof(PoolCue));
 			stopBall();
 		}
-
 
 		//the mouse is down lets get the screen point and offset
 		void OnMouseDown()
@@ -194,18 +195,23 @@ namespace PoolKit
 
 		public void fireBall(Vector3 vec)
 		{
-            if (!TNManager.isHosting)
-            {
-                //return;
-            }
-
             // free all the balls, including this white ball
             PoolKit.BaseGameManager.fireBall();
 
-            m_fired = true;
-            m_slowTime = 0;
-            m_rigidbody.AddForce(vec, ForceMode.Impulse);
-            m_rigidbody.AddTorque(ballTorque);
+            if (TNManager.isHosting)
+            {
+                m_fired = true;
+                m_slowTime = 0;
+                m_rigidbody.AddForce(vec, ForceMode.Impulse);
+                m_rigidbody.AddTorque(ballTorque);
+            }
         }
-	}
+
+        [RFC]
+        void SyncBallTransformRFC(Vector3 position, Quaternion rotation)
+        {
+            transform.position = position;
+            transform.rotation = rotation;
+        }
+    }
 }

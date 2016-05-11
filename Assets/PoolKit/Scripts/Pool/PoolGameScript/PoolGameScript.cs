@@ -220,7 +220,7 @@ namespace PoolKit
 				m_whiteBall.foul = m_foul;
 			}
 
-			PoolKit.BaseGameManager.showTitleCard( m_players[m_playerTurn].playerName + " turn!");
+			PoolKit.BaseGameManager.showTitleCard( "Player " + m_players[m_playerTurn].playerName + "' turn!");
 			
 			PoolKit.BaseGameManager.playersTurn(m_playerTurn);
 		}

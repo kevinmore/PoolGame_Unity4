@@ -8,7 +8,7 @@ using System.Net;
 public class PoolTNManager : MonoBehaviour
 {
     static public PoolTNManager Instance;
-    public string serverIPAddress = "52.58.44.209";
+    public UIInput serverIPAddress;
     public int serverPort = 5127;
 
     public int maxPlayerCountPerChannel = 2;
@@ -61,7 +61,7 @@ public class PoolTNManager : MonoBehaviour
         {
             // We want to connect to the specified destination when the button is clicked on.
             // "OnNetworkConnect" function will be called sometime later with the result.
-            TNManager.Connect(serverIPAddress, serverPort);
+            TNManager.Connect(serverIPAddress.value, serverPort);
         }
 
         NGUITools.SetActive(findGameButton.gameObject, false);

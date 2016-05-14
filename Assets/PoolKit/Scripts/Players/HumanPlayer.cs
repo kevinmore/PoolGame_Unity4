@@ -69,7 +69,12 @@ namespace PoolKit
 		}
 		public override void onMyTurn()
 		{
-			base.onMyTurn();
+
+            //Debug.Log("I'm player " + playerName + " is my turn? " + m_myTurn);
+            if(tno.isMine)
+            DebugLabel.Instance.ShowMsg("I'm player " + playerName + " is my turn? " + m_myTurn);
+
+            base.onMyTurn();
 			if(m_cue)
 			{
 				m_cue.requestRotate();

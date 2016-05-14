@@ -17,7 +17,7 @@ public class PoolTNManager : MonoBehaviour
     public bool persistent = false;
     public string disconnectLevel;
 
-    public GameObject uiRoot;
+    //public GameObject uiRoot;
     public UIInput userName;
     public UILabel hintLabel;
     public UIButton findGameButton;
@@ -97,7 +97,7 @@ public class PoolTNManager : MonoBehaviour
         if (!string.IsNullOrEmpty(disconnectLevel) && Application.loadedLevelName != disconnectLevel)
         {
             Application.LoadLevel(disconnectLevel);
-            uiRoot.SetActive(true);
+            //uiRoot.SetActive(true);
             NGUITools.SetActive(userName.gameObject, true);
             NGUITools.SetActive(hintLabel.gameObject, false);
         }
@@ -131,7 +131,7 @@ public class PoolTNManager : MonoBehaviour
         if (!string.IsNullOrEmpty(disconnectLevel) && Application.loadedLevelName != disconnectLevel)
         {
             Application.LoadLevel(disconnectLevel);
-            uiRoot.SetActive(true);
+            //uiRoot.SetActive(true);
             NGUITools.SetActive(userName.gameObject, true);
             NGUITools.SetActive(hintLabel.gameObject, false);
         }
@@ -182,7 +182,7 @@ public class PoolTNManager : MonoBehaviour
     {
         // reaches 2 players, load level
         TNManager.LoadLevel(connectLevel);
-        uiRoot.SetActive(false);
+        //uiRoot.SetActive(false);
     }
 
     void OnNetworkPlayerLeave(Player p)
@@ -191,7 +191,7 @@ public class PoolTNManager : MonoBehaviour
         if (!string.IsNullOrEmpty(disconnectLevel) && Application.loadedLevelName != disconnectLevel)
         {
             Application.LoadLevel(disconnectLevel);
-            uiRoot.SetActive(true);
+            //uiRoot.SetActive(true);
             NGUITools.SetActive(userName.gameObject, true);
             NGUITools.SetActive(hintLabel.gameObject, false);
         }

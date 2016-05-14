@@ -6,7 +6,7 @@ using TNet;
 /// You can see it used in Example Chat.
 /// </summary>
 
-[ExecuteInEditMode]
+//[ExecuteInEditMode]
 public class ChatBox : TNBehaviour
 {
     Rect mRect;

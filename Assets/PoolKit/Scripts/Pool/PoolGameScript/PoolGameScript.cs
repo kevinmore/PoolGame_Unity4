@@ -103,8 +103,10 @@ namespace PoolKit
 			}
 
             // player 0 plays first
-            if (TNManager.isHosting)
+            if (TNManager.isConnected && TNManager.isHosting)
             {
+                //Debug.Log("I'm hosing.");
+                //DebugLabel.Instance.ShowMsg("I AM HOSTING");
                 BaseGameManager.playersTurn(0);
             }
         }

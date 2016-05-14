@@ -16,6 +16,6 @@ public class DebugLabel : MonoBehaviour {
 
 	public void ShowMsg(string msg)
     {
-        label.text = msg;
+        label.text = label.text + "\n" + msg;
     }
 }

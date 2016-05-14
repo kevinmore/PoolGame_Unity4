@@ -111,6 +111,9 @@ public class ChatBox : TNBehaviour
 
     void OnGUI()
     {
+        if (TNManager.players.Count == 0)
+            return;
+
         float cx = Screen.width * 0.5f;
         float cy = Screen.height * 0.5f;
 

@@ -105,35 +105,55 @@ namespace PoolKit
             // player 0 plays first
             if (TNManager.isConnected && TNManager.isHosting)
             {
-                //Debug.Log("I'm hosing.");
-                //DebugLabel.Instance.ShowMsg("I AM HOSTING");
                 BaseGameManager.playersTurn(0);
             }
         }
 		void OnEnable()
 		{
-			PoolKit.BaseGameManager.onFireBall += onFireBall;
-			PoolKit.BaseGameManager.onBallEnterPocket	+= onEnterPocket;
-			PoolKit.BaseGameManager.onWhiteBallHitBall += onWhiteBallHitBall;
-			PoolKit.BaseGameManager.onGameStart += onGameStart;
+			BaseGameManager.onFireBall += onFireBall;
+			BaseGameManager.onBallEnterPocket	+= onEnterPocket;
+			BaseGameManager.onWhiteBallHitBall += onWhiteBallHitBall;
+			BaseGameManager.onGameStart += onGameStart;
 			BaseGameManager.onIsMyTurn += onIsMyTurn;
+            BaseGameManager.onPlayerTurn += onPlayerTurn;
 
 		}
 		void OnDisable()
 		{
-			PoolKit.BaseGameManager.onFireBall -= onFireBall;
-			PoolKit.BaseGameManager.onBallEnterPocket	-= onEnterPocket;
-			PoolKit.BaseGameManager.onWhiteBallHitBall -= onWhiteBallHitBall;
+			BaseGameManager.onFireBall -= onFireBall;
+			BaseGameManager.onBallEnterPocket	-= onEnterPocket;
+			BaseGameManager.onWhiteBallHitBall -= onWhiteBallHitBall;
+			BaseGameManager.onGameStart-= onGameStart;
 			BaseGameManager.onIsMyTurn -= onIsMyTurn;
-			PoolKit.BaseGameManager.onGameStart-= onGameStart;
-
-		}
-		public bool onIsMyTurn(int playerID)
+            BaseGameManager.onPlayerTurn -= onPlayerTurn;
+        }
+        public bool onIsMyTurn(int playerID)
 		{
 			return m_currentPlayer.playerIndex == playerID;
 		}
 
-		void onWhiteBallHitBall(bool hitBall,PoolBall ball)
+        public void onPlayerTurn(int pi)
+        {
+            if (TNManager.isConnected)
+            {
+                tno.Send("playerTurnRFC", Target.All, pi);
+            }
+            else
+            {
+                playerTurnRFC(pi);
+            }
+        }
+
+        [RFC]
+        public void playerTurnRFC(int pi)
+        {
+            //DebugLabel.Instance.ShowMsg("Player " + pi + "'s turn");
+            CurrentPlayer = m_players[pi];
+            m_players[pi].onMyTurn();
+            m_players[1 - pi].onNotMyTurn();
+        }
+
+        void onWhiteBallHitBall(bool hitBall,PoolBall ball)
 		{
 			//its our first hit
 			if(hitBall==false)

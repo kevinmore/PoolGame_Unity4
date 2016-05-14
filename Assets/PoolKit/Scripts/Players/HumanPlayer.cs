@@ -39,7 +39,17 @@ namespace PoolKit
             base.Awake();
             if (TNManager.isConnected)
             {
-                playerName = tno.isMine ? TNManager.player.name : TNManager.players[0].name;
+                if(tno.isMine)
+                {
+                    playerIndex = TNManager.playerID < TNManager.players[0].id ? 0 : 1;
+                    playerName = TNManager.player.name;
+                }
+                else
+                {
+                    playerIndex = TNManager.playerID < TNManager.players[0].id ? 1 : 0;
+                    playerName = TNManager.players[0].name;
+                }
+
 
                 // check if 2 players are all created
                 int playersCount = FindObjectsOfType(typeof(HumanPlayer)).Length;
@@ -69,11 +79,6 @@ namespace PoolKit
 		}
 		public override void onMyTurn()
 		{
-
-            //Debug.Log("I'm player " + playerName + " is my turn? " + m_myTurn);
-            if(tno.isMine)
-            DebugLabel.Instance.ShowMsg("I'm player " + playerName + " is my turn? " + m_myTurn);
-
             base.onMyTurn();
 			if(m_cue)
 			{

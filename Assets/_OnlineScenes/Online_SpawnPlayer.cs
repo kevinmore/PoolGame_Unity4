@@ -13,8 +13,7 @@ public class Online_SpawnPlayer : MonoBehaviour
     /// Prefab to instantiate.
     /// </summary>
 
-    public GameObject player1;
-    public GameObject player2;
+    public GameObject playerObject;
 
     /// <summary>
     /// Whether the instantiated object will remain in the game when the player that created it leaves.
@@ -28,10 +27,8 @@ public class Online_SpawnPlayer : MonoBehaviour
         while (TNManager.isJoiningChannel) yield return null;
 
         // get the other player
-        int otherId = TNManager.players[0].id;
-        TNManager.Create(TNManager.playerID < otherId ? player1 : player2, persistent);
+        TNManager.Create(playerObject, persistent);
 
-        
         Destroy(gameObject);
     }
 }

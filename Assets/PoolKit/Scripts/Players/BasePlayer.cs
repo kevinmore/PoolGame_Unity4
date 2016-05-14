@@ -56,7 +56,7 @@ namespace PoolKit
 		public virtual void OnEnable()
 		{
 			BaseGameManager.onGameOver 		+= onGameOver;
-			BaseGameManager.onPlayerTurn 	+= onPlayerTurn;
+			//BaseGameManager.onPlayerTurn 	+= onPlayerTurn;
 			BaseGameManager.onResetPlayer 	+= onResetPlayer;
 			BaseGameManager.onSetStripesOrSolids += onSetStripesOrSolids;
 		}
@@ -64,7 +64,7 @@ namespace PoolKit
 		{
 			BaseGameManager.onSetStripesOrSolids -= onSetStripesOrSolids;
 			BaseGameManager.onGameOver 		-= onGameOver;
-			BaseGameManager.onPlayerTurn 	-= onPlayerTurn;
+			//BaseGameManager.onPlayerTurn 	-= onPlayerTurn;
 			BaseGameManager.onResetPlayer 	-= onResetPlayer;
 		}
 		public void onSetStripesOrSolids(int pi, bool greater8)
@@ -116,38 +116,47 @@ namespace PoolKit
 		
 		public virtual void onMyTurn()
 		{
-			if(m_cue)
+            m_fired = false;
+            m_myTurn = true;
+            //DebugLabel.Instance.ShowMsg("my turn");
+
+            if (m_cue)
 			{
 				m_cue.greaterThen8 = m_greaterThen8;
 				m_cue.areAllBallsDown = areAllBallsDown();
 				m_cue.gameObject.SetActive(true);
 			}
 		}
-		public virtual void onPlayerTurn(int pi)
-		{
-            if (tno != null)
-            {
-                tno.Send("myTurnRPC", Target.All, pi);
-            }
-            else
-                myTurnRPC(pi);
+
+        public virtual void onNotMyTurn()
+        {
+            m_myTurn = false;
+            //DebugLabel.Instance.ShowMsg("not my turn, my index " + playerIndex);
         }
 
-        [RFC]
-        public void myTurnRPC(int pi)
-		{
-			if(pi==playerIndex)
-			{
-                PoolGameScript.Instance.CurrentPlayer = this;
-				m_fired=false;
-				m_myTurn = true;
-                onMyTurn();
-            }
-            else
-            {
-				m_myTurn = false;
-            }
-        }
+//         public void onPlayerTurn(int pi)
+// 		{
+//             if (tno != null)
+//             {
+//                 tno.Send("myTurnRPC", Target.All, pi);
+//             }
+//             else
+//                 myTurnRPC(pi);
+//         }
+// 
+//         [RFC]
+//         public void myTurnRPC(int pi)
+// 		{
+//             if (pi == playerIndex)
+//             {
+//                 
+//                 onMyTurn();
+//             }
+//             else
+//             {
+//                 onNotMyTurn();
+//             }
+//         }
         void onGameOver(string vic)
 		{
 			m_gameOver=true;

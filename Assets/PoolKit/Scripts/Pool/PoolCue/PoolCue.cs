@@ -196,9 +196,16 @@ namespace PoolKit
 				if(poolCueGO)
 				{
 					Vector3 pos = Vector3.zero;
-					pos.z = Mathf.Lerp(-.015f,-.065f,m_powerScalar);
-					poolCueGO.transform.localPosition = pos;
-				}
+					float z = Mathf.Lerp(-.015f,-.065f,m_powerScalar);
+//                     if (TNManager.isConnected)
+//                     {
+//                         tno.Send("SyncPoolCueZPos", Target.All, z);
+//                     }
+//                     else
+                    {
+                        poolCueGO.transform.localPosition = new Vector3(0, 0, z);
+                    }
+                }
 
 				if(m_requestRotate)
 				{
@@ -215,6 +222,11 @@ namespace PoolKit
 
 		}
 
+        [RFC]
+        public void SyncPoolCueZPos(float z)
+        {
+            poolCueGO.transform.localPosition = new Vector3(0, 0, z);
+        }
 
 		public void fireBall()
 		{

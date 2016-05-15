@@ -69,7 +69,7 @@ namespace PoolKit
 		}
 
 		//handle the fouls for 9-ball.
-		public override bool handleFouls()
+		public override void handleFouls()
 		{
 
 			Debug.Log ("hitBall"  + m_ballIndex);
@@ -91,7 +91,6 @@ namespace PoolKit
 			}
 
 			m_ballIndex=-1;
-			return m_foul;
 		}
 	}
 }

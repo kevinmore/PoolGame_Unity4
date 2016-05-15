@@ -87,13 +87,14 @@ namespace PoolKit
 		}
 		void OnGUI()
 		{
-			if(m_myTurn && tno.isMine)
+			if(m_myTurn && tno.isMine && !m_fired)
 			{
 				Rect r = new Rect(Screen.width-200,Screen.height-70,64,64);
 				if(GUI.Button(r,fireTexture,style0) && m_ball.isRolling()==false)
 				{
 					m_cue.requestFire();
-				}
+                    m_fired = true;
+                }
 			}
 		}
 		void onButtonPress(string buttonID)

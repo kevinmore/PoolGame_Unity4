@@ -14,11 +14,11 @@ namespace PoolKit
 		}
 		public override  void enterPocket(PoolBall ball)
 		{
-            if (tno != null)
-            {
-                tno.Send("enterPocketRPC", Target.All, ball.name, m_playerTurn);
-            }
-            else
+//             if (tno != null)
+//             {
+//                 tno.Send("enterPocketRPC", Target.All, ball.name, m_playerTurn);
+//             }
+//             else
                 enterPocketRPC(ball.name, m_playerTurn);
         }
 
@@ -41,19 +41,23 @@ namespace PoolKit
 				m_gameover=true;
 
 				//we got all the balls down.
-				if(m_players[m_playerTurn].areAllBallsDown()==false)
+				if(m_players[m_playerTurn].areAllBallsDown())
 				{	
-					PoolKit.BaseGameManager.gameover(m_players[m_playerTurn].playerName + " Loses!");
-				}else{
-					PoolKit.BaseGameManager.gameover( m_players[m_playerTurn].playerName + " Wins!");
-				}
-			}
+					BaseGameManager.gameover( m_players[m_playerTurn].playerName + " Wins!");
+                }
+                else
+                {
+                    BaseGameManager.gameover(m_players[m_playerTurn].playerName + " Loses!");
+                }
+            }
 
 			if(ball && ball == m_whiteBall)
 			{
 				m_whiteEnteredPocket = true;
-			}else if(ball && ball.pocketed==false)
+			}
+            else if(ball && ball.pocketed==false)
 			{
+                Debug.Log("Ball pocked: " + ball.name);
 				m_ballsPocketed++;
 			}
 		}
@@ -67,22 +71,27 @@ namespace PoolKit
 
 
 		//handle the fouls for 8-ball.
-		public override bool handleFouls()
+		public override void handleFouls()
 		{
-            if (tno != null)
+            m_foul = false;
+
+            if (m_whiteEnteredPocket)
             {
-                tno.Send("handleFoulsRFC", Target.All);
+                m_foulSTR = "FOUL - White ball pocketed!";
+                m_foul = true;
+                clearWallHit();
+                return;
             }
-            else
-                handleFoulsRFC();
 
-            return m_foul;
-		}
+            if (m_ballsPocketed > 0)
+            {
+                m_foulSTR = "";
+                m_foul = false;
+                m_break = true;
+                clearWallHit();
+                return;
+            }
 
-        [RFC]
-        void handleFoulsRFC()
-        {
-            bool fouls = false;
             int wallHit = 0;
             for (int i = 0; i < m_balls.Length; i++)
             {
@@ -92,29 +101,16 @@ namespace PoolKit
                 }
             }
 
-            string foulSTR = null;
-
-            if (m_whiteEnteredPocket)
-            {
-                PoolKit.BaseGameManager.showTitleCard("FOUL - White ball pocketed!");
-
-                fouls = true;
-            }
-
-            if (m_foul)
-            {
-                PoolKit.BaseGameManager.showTitleCard(m_foulSTR);
-
-            }
-
-            if (m_break == false)
+            if (!m_break)
             {
                 if (wallHit < 4)
                 {
                     //it was a foul ball.
                     m_break = true;
-                    PoolKit.BaseGameManager.showTitleCard("FOUL - At least 4 balls must hit the wall after a break!");
-                    fouls = true;
+                    m_foulSTR = "FOUL - At least 4 balls must hit the wall after a break!";
+                    m_foul = true;
+                    clearWallHit();
+                    return;
                 }
                 else
                 {
@@ -124,13 +120,14 @@ namespace PoolKit
 
             if (wallHit == 0 && m_ballsPocketed == 0)
             {
-                PoolKit.BaseGameManager.showTitleCard("FOUL - No balls hit wall, or were pocketed!");
-                fouls = true;
-
+                BaseGameManager.showTitleCard("FOUL - No balls hit wall, or were pocketed!");
+                m_foulSTR = "FOUL - No balls hit wall, or were pocketed!";
+                m_foul = true;
+                clearWallHit();
+                return;
             }
-            m_foul = fouls;
 
-
+            m_foulSTR = "";
             clearWallHit();
         }
 	}

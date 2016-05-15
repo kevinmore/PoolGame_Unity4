@@ -36,10 +36,14 @@ namespace PoolKit
 		};
 
 		//what state is the ball in
-		protected State m_state;
-
-		//the minimum speed
-		public float minSpeed = 0.5f;
+		protected State m_state = State.IDLE;
+        public State CurrentState
+        {
+            get { return m_state; }
+            set { m_state = value; }
+        }
+        //the minimum speed
+        public float minSpeed = 0.5f;
 
 		//the current time the ball has to be slowed down
 		protected float m_slowTime;
@@ -152,20 +156,24 @@ namespace PoolKit
 			{
 				pocketed=true;
 				//we entered a pocket lets freeze the x and z constraints so it doesnt bounce around. 
-				m_rigidbody.velocity = Vector3.zero;		
+                if(!m_rigidbody.isKinematic)
+				    m_rigidbody.velocity = Vector3.zero;		
+
 				m_state = State.DONE;
 				if(ballType!=BallType.WHITE)
 				{
 					Destroy(gameObject);
 				}else{
 					transform.position = m_initalPos;
-				}
+                    onBallStop();
+                }
 			}
 		}
 		public virtual void onBallStop()
 		{
-			m_rigidbody.angularVelocity = Vector3.zero;
-			m_rigidbody.velocity = Vector3.zero;
+			m_rigidbody.isKinematic=false;
+            m_rigidbody.angularVelocity = Vector3.zero;
+            m_rigidbody.velocity = Vector3.zero;
 			m_rigidbody.isKinematic=true;
 
             // sync one more time

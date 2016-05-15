@@ -15,7 +15,7 @@ namespace PoolKit
 
 		public enum State
 		{
-			IDLE,
+            IDLE,
 			ROLLING,
 			DONE_ROLLING
 		};
@@ -56,9 +56,10 @@ namespace PoolKit
 
 		//are in we in gameover state yet
 		protected bool m_gameover=false;
+        protected bool m_gamestarted = false;
 
-		//a ref to the players
-		protected PoolKit.BasePlayer[] m_players;
+        //a ref to the players
+        protected PoolKit.BasePlayer[] m_players;
 
 		//do we have a foul
 		protected bool m_foul=false;
@@ -101,7 +102,7 @@ namespace PoolKit
 			}else{
 				m_players  = players;
 			}
-
+            m_state = State.IDLE;
             // player 0 plays first
             if (TNManager.isConnected && TNManager.isHosting)
             {
@@ -134,7 +135,7 @@ namespace PoolKit
 
         public void onPlayerTurn(int pi)
         {
-            if (TNManager.isConnected)
+            if (tno != null)
             {
                 tno.Send("playerTurnRFC", Target.All, pi);
             }
@@ -166,7 +167,8 @@ namespace PoolKit
 
 		void onEnterPocket(string pocketIndex, PoolBall ball)
 		{
-			enterPocket(ball);
+            if(TNManager.isHosting)
+			    enterPocket(ball);
 		}
 		public virtual void enterPocket(PoolBall ball)
 		{
@@ -182,19 +184,20 @@ namespace PoolKit
 		}
 		void Update () {
 
-			if(m_state == State.DONE_ROLLING)
-			{
-				if(m_gameover==false)
-					handleWhiteInPocket();
-			}
-			if(m_state==State.ROLLING)
-			{
-				if(m_gameover==false)
-					checkDoneRolling();
-			}
-		}
+            if (m_state == State.DONE_ROLLING)
+            {
+                if (m_gameover == false)
+                    handleWhiteInPocket();
+            }
+            if (m_state == State.ROLLING)
+            {
+                if (m_gameover == false)
+                    checkDoneRolling();
+            }
 
-		void handleWhiteInPocket()
+        }
+
+        void handleWhiteInPocket()
 		{
 			if(m_whiteEnteredPocket)
 			{
@@ -222,7 +225,7 @@ namespace PoolKit
 			{
 				hasOldBallpos=true;
 				oldBallPos= m_whiteBall.transform.position;
-				Debug.Log ("disable whiteBall: " + m_whiteBall.name);
+				//Debug.Log ("disable whiteBall: " + m_whiteBall.name);
 				m_whiteBall.gameObject.SetActive(false);
 			}
 
@@ -234,7 +237,7 @@ namespace PoolKit
 				{
 					m_whiteBall.transform.position = oldBallPos;
 				}
-				Debug.Log ("enable whiteBall: " + m_whiteBall.name);
+				//Debug.Log ("enable whiteBall: " + m_whiteBall.name);
 
 				m_whiteBall.clear();
 				m_whiteBall.setPoolCue(m_currentPlayer.getCue());
@@ -267,6 +270,9 @@ namespace PoolKit
 			bool doneRolling = true;
 			for(int i=0; i<m_balls.Length; i++)
 			{
+                if (m_balls[i] == m_whiteBall)
+                    Debug.Log("white ball state: " + m_whiteBall.CurrentState);
+
 				if(m_balls[i] && (m_balls[i].isDoneRolling()==false &&
 				   m_balls[i].gameObject.activeInHierarchy))
 				{
@@ -275,24 +281,25 @@ namespace PoolKit
 			}
 			if(doneRolling)
 			{
-				Debug.Log ("doneRolling!");
-				float waitTime=0;
-				bool fouls = handleFouls();
-				//clear the wall hit.
-				if(fouls)
-				{
-					PoolKit.BaseGameManager.foul ("");
-					waitTime=2f;
-				}
+				handleFouls();
+                //play the foul sound
+                if (m_foul)
+                {
+                    if (tno != null)
+                        tno.Send("ShowFoulMessageRFC", Target.All, m_foulSTR);
+                    else
+                        ShowFoulMessageRFC(m_foulSTR);
+                }
 
 
-				PoolKit.BaseGameManager.ballStopped();
+                BaseGameManager.ballStopped();
 				m_state = State.DONE_ROLLING;
 
 
 				//change turn!
 				if(m_ballsPocketed==0 || m_whiteEnteredPocket || m_foul)
 				{
+                    //DebugLabel.Instance.ShowMsg("Change turn");
 					if(m_players.Length>1)
 					{
 						m_playerTurn^=1;
@@ -300,18 +307,18 @@ namespace PoolKit
 						m_currentPlayer = m_players[m_playerTurn];
 					}
 
-					StartCoroutine(changeTurn(waitTime));
+					StartCoroutine(changeTurn(2f));
 				}else
 				{
-					StartCoroutine(changeTurn(waitTime));
-				}
+                    //DebugLabel.Instance.ShowMsg("Dont Change turn");
+                    StartCoroutine(changeTurn(2f));
+                }
 				m_ballsPocketed=0;
 				m_turnCounter++;
 			}
 		}
-		public virtual bool handleFouls()
+		public virtual void handleFouls()
 		{
-			return true;
 		}
 
 		public void clearWallHit()
@@ -323,5 +330,11 @@ namespace PoolKit
 			}
 		}
 
-	}
+        [RFC]
+        public void ShowFoulMessageRFC(string msg)
+        {
+            BaseGameManager.foul("");
+            BaseGameManager.showTitleCard(msg);
+        }
+    }
 }

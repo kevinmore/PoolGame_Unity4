@@ -113,7 +113,7 @@ namespace PoolKit
 					m_cue.setTarget(m_targetBall,targetPos);
 					
 					
-					m_cue.setPower(m_power);
+					m_cue.setPower(m_power * 0.01f);
 					m_whiteBall.setTarget(m_targetBall,targetPos);
 					m_whiteBall.transform.LookAt(m_targetBall.transform.position);
 					yield return new WaitForSeconds(1f);

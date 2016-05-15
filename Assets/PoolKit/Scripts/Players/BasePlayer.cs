@@ -125,6 +125,8 @@ namespace PoolKit
 				m_cue.greaterThen8 = m_greaterThen8;
 				m_cue.areAllBallsDown = areAllBallsDown();
 				m_cue.gameObject.SetActive(true);
+                m_cue.setPower(0.5f);
+                m_cue.CurrentState = PoolCue.State.ROTATE;
 			}
 		}
 

@@ -43,11 +43,13 @@ namespace PoolKit
 				//we got all the balls down.
 				if(m_players[m_playerTurn].areAllBallsDown())
 				{	
-					BaseGameManager.gameover( m_players[m_playerTurn].playerName + " Wins!");
+					//BaseGameManager.gameover( m_players[m_playerTurn].playerName + " Wins!");
+                    tno.Send("ShowGameResult", Target.All, m_players[m_playerTurn].playerName + " Wins!");
                 }
                 else
                 {
-                    BaseGameManager.gameover(m_players[m_playerTurn].playerName + " Loses!");
+                   //BaseGameManager.gameover(m_players[m_playerTurn].playerName + " Loses!");
+                    tno.Send("ShowGameResult", Target.All, m_players[m_playerTurn].playerName + " Loses!");
                 }
             }
 
@@ -61,6 +63,12 @@ namespace PoolKit
 				m_ballsPocketed++;
 			}
 		}
+
+        [RFC]
+        public void ShowGameResult(string msg)
+        {
+            BaseGameManager.gameover(msg);
+        }
 
         [RFC]
 		public override void changeTurnRPC(bool foul,

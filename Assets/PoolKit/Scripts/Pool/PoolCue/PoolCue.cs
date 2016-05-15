@@ -36,9 +36,13 @@ namespace PoolKit
 
 		//the current state
 		protected State m_state;
-
-		//our current power
-		public float power=10f;
+        public PoolKit.PoolCue.State CurrentState
+        {
+            get { return m_state; }
+            set { m_state = value; }
+        }
+        //our current power
+        public float power=10f;
 
 		/// <summary>
 		/// The pool cue model
@@ -113,8 +117,13 @@ namespace PoolKit
 		}
 		public void setPower(float power)
 		{
-			m_powerScalar = power * 0.01f;
+            m_powerScalar = Mathf.Clamp(power, minPowerScalar, 1.0f);
 		}
+
+        public float getPower()
+        {
+            return m_powerScalar;
+        }
 
         bool IsMyTurn()
         {
@@ -122,18 +131,18 @@ namespace PoolKit
             return player.playerName == TNManager.playerName;
         }
 
-        public void OnGUI()
-		{
-			//if we are in the rotate state and not in the menu scene.
-			if(m_state==State.ROTATE && Application.loadedLevel>0 && PoolGameScript.Instance.CurrentPlayer != null)
-			{
-                if (IsMyTurn())
-                {
-                    GUI.skin = skin0;
-                    m_powerScalar = GUI.HorizontalSlider(new Rect(20, Screen.height - 32, 400, 32), m_powerScalar, minPowerScalar, 1f);
-                }
-			}
-		}
+//         public void OnGUI()
+// 		{
+// 			//if we are in the rotate state and not in the menu scene.
+// 			if(m_state==State.ROTATE && Application.loadedLevel>0 && PoolGameScript.Instance.CurrentPlayer != null)
+// 			{
+//                 if (IsMyTurn())
+//                 {
+//                     GUI.skin = skin0;
+//                     m_powerScalar = GUI.HorizontalSlider(new Rect(20, Screen.height - 32, 400, 32), m_powerScalar, minPowerScalar, 1f);
+//                 }
+// 			}
+// 		}
 
 		public void onGameStart()
 		{
@@ -164,7 +173,7 @@ namespace PoolKit
         [RFC]
 		public virtual void ballStopRPC()
 		{
-			m_state = State.ROTATE;
+			//m_state = State.ROTATE;
 
 			if(m_whiteBall)
 			{
@@ -189,7 +198,6 @@ namespace PoolKit
 				{
 					Vector3 pos = Vector3.zero;
 					float z = Mathf.Lerp(-.015f,-.065f,m_powerScalar);
-
                     poolCueGO.transform.localPosition = new Vector3(0, 0, z);
                 }
 
@@ -205,7 +213,13 @@ namespace PoolKit
 
 		}
 
-		public void fireBall()
+        [RFC]
+        public void SyncCueZPos(float z)
+        {
+            poolCueGO.transform.localPosition = new Vector3(0, 0, z);
+        }
+
+        public void fireBall()
 		{
              if (tno != null)
              {
@@ -262,22 +276,20 @@ namespace PoolKit
 				poolCueGO.SetActive(true);
 				SphereCollider sc = m_whiteBall.sphereCollider;
 				Ray ray = new Ray(m_whiteBall.transform.position + new Vector3(0,sc.radius*ballScalarRadius,0),sc.transform.forward);
-				RaycastHit rch;
-				if(Physics.SphereCast(ray,sc.radius*ballScalarRadius,out rch,1000f,layerMask.value))
+				RaycastHit hit;
+				if(Physics.SphereCast(ray,sc.radius*ballScalarRadius,out hit,1000f,layerMask.value))
 				{
-
-
-					Vector3 pos = rch.point;
+					Vector3 pos = hit.point;
 					lineRenderer.SetPosition(0,m_whiteBall.transform.position);
 					float radius = sc.radius * ballScalarRadius;
 
-					Vector3 vec =  pos-sc.transform.position;
+					Vector3 vec = hit.point - sc.transform.position;
 
 					pos = sc.transform.position + vec.normalized * (vec.magnitude - radius);
 
 					if(lineRenderer)
 						lineRenderer.SetPosition(1,pos);
-					Vector3 nrm = rch.normal;
+					Vector3 nrm = hit.normal;
 					nrm.y=0;
 					if(m_lr2)
 					{
@@ -289,9 +301,9 @@ namespace PoolKit
 					lineRenderer.SetColors(Color.yellow,Color.yellow);
 
 
-					if(rch.collider.name.Contains("Ball"))
+					if(hit.collider.name.Contains("Ball")/* || hit.collider.name.Contains("cushions")*/)
 					{
-						m_targetBall = rch.collider.GetComponent<PoolBall>();
+						m_targetBall = hit.collider.GetComponent<PoolBall>();
 						bool isOkay = isBallOkay(m_targetBall);
 
 						if(isOkay)
@@ -308,18 +320,18 @@ namespace PoolKit
 						{
 							m_lr2.gameObject.SetActive(true);
 						}
-						Vector3 otherBallPos = rch.point;
+						Vector3 otherBallPos = hit.point;
 
-						Vector3 incomingVec = rch.point - sc.transform.position;
-						Vector3 reflectVec = Vector3.Reflect(-incomingVec, rch.normal);
-						Debug.DrawLine(sc.transform.position, rch.point, Color.red);
-						Debug.DrawRay(rch.point, reflectVec, Color.green);
+						Vector3 incomingVec = hit.point - sc.transform.position;
+						Vector3 reflectVec = Vector3.Reflect(-incomingVec, hit.normal);
+						Debug.DrawLine(sc.transform.position, hit.point, Color.red);
+						Debug.DrawRay(hit.point, reflectVec, Color.green);
 
 
 						Vector3 dir = Vector3.Reflect ( m_whiteBall.transform.forward,nrm).normalized;
-						m_lr2.SetPosition(0,rch.point);
+						m_lr2.SetPosition(0,hit.point);
 
-						Vector3 mirrorPos = rch.point + Quaternion.AngleAxis(angleReflect,Vector3.up) * dir.normalized * reflectDistance;
+						Vector3 mirrorPos = hit.point + Quaternion.AngleAxis(angleReflect,Vector3.up) * dir.normalized * reflectDistance;
 						m_lr2.SetPosition(1,mirrorPos);
 
 						m_targetPos = mirrorPos;

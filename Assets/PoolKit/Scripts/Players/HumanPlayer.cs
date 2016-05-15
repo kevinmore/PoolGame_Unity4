@@ -77,15 +77,8 @@ namespace PoolKit
 			base.OnDisable();
 			BaseGameManager.onButtonPress-= onButtonPress;
 		}
-		public override void onMyTurn()
-		{
-            base.onMyTurn();
-			if(m_cue)
-			{
-				m_cue.requestRotate();
-			}
-		}
-		void OnGUI()
+
+        void OnGUI()
 		{
 			if(m_myTurn && tno.isMine && !m_fired)
 			{
@@ -119,57 +112,21 @@ namespace PoolKit
         }
 		void rotateBall()
 		{
-			float mx = Input.GetAxis("Mouse X");
-
 			Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-			bool mouseDown = true;
-			if(Application.platform==RuntimePlatform.Android || 
-			   Application.platform==RuntimePlatform.IPhonePlayer)
-			{
-				mx = 0;
-				if(Input.touchCount>0)
-				{
-					Touch t0 = Input.touches[0];
-					if(t0.phase==TouchPhase.Moved)
-					{
-						mx = t0.deltaPosition.x;
-					}else{
-						mouseDown=false;
-					}
-				}
-			}else{
-				mouseDown = Input.GetMouseButton(0);
-			}
+            RaycastHit hit;
+            if (Physics.Raycast(ray, out hit, 100))
+            {
+                if (hit.collider.gameObject != m_ball)
+                {
+                    //Vector3 targetPos = hit.point + 10f * (hit.point - m_ball.transform.position);
+                    m_ball.transform.LookAt(hit.point);
 
-			Vector3 pos = Input.mousePosition;
-			bool hitWhiteBall = Physics.Raycast(ray,1000f,layermask.value);
+                    // the the mouse button is down, enter fire mode
 
+                }
+            }
 
-			if(pos.y >60 && hitWhiteBall==false)
-			{
-				if(mouseDown)
-				{
-					if(m_ball)
-					{
-						//m_ball.transform.Rotate(new Vector3(0,mx * rotationSpeed * Time.deltaTime,0));
-                        tno.Send("RotateBallRFC", Target.All, mx * rotationSpeed * Time.deltaTime);
-					}
-					//m_cue.requestRotate();
-                    tno.Send("RequestRotateRFC", Target.All);
-				}
-			}
 		}	
 
-        [RFC]
-        void RotateBallRFC(float amount)
-        {
-            m_ball.transform.Rotate(new Vector3(0, amount, 0));
-        }
-
-        [RFC]
-        void RequestRotateRFC()
-        {
-            m_cue.requestRotate();
-        }
     }
 }

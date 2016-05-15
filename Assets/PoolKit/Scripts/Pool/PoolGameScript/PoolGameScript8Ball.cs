@@ -57,7 +57,7 @@ namespace PoolKit
 			}
             else if(ball && ball.pocketed==false)
 			{
-                Debug.Log("Ball pocked: " + ball.name);
+                Debug.Log("Ball pocked: " + ball.ballIndex);
 				m_ballsPocketed++;
 			}
 		}

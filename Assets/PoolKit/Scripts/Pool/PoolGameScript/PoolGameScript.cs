@@ -270,9 +270,6 @@ namespace PoolKit
 			bool doneRolling = true;
 			for(int i=0; i<m_balls.Length; i++)
 			{
-                if (m_balls[i] == m_whiteBall)
-                    Debug.Log("white ball state: " + m_whiteBall.CurrentState);
-
 				if(m_balls[i] && (m_balls[i].isDoneRolling()==false &&
 				   m_balls[i].gameObject.activeInHierarchy))
 				{

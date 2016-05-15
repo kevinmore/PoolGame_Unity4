@@ -68,9 +68,6 @@ namespace PoolKit
 		//the taret position
 		protected Vector3 m_targetPos;
 
-		//do we want to rotate
-		protected bool m_requestRotate = false;
-
 		//do we want to fire the ball
 		protected bool m_requestFire = false;
 
@@ -178,12 +175,7 @@ namespace PoolKit
 			transform.localRotation = m_initalRot;
 			transform.localPosition = m_initalPos;
 		}
-		[RFC] public virtual  void requestRotateRPC(){m_requestRotate=true;}
-		public void requestRotate()
-        {
-            requestRotateRPC();
-            //tno.Send("requestRotateRPC", Target.All);
-        }
+
 		public  void requestFire()
         {
             m_requestFire = true;
@@ -197,21 +189,12 @@ namespace PoolKit
 				{
 					Vector3 pos = Vector3.zero;
 					float z = Mathf.Lerp(-.015f,-.065f,m_powerScalar);
-//                     if (TNManager.isConnected)
-//                     {
-//                         tno.Send("SyncPoolCueZPos", Target.All, z);
-//                     }
-//                     else
-                    {
-                        poolCueGO.transform.localPosition = new Vector3(0, 0, z);
-                    }
+
+                    poolCueGO.transform.localPosition = new Vector3(0, 0, z);
                 }
 
-				if(m_requestRotate)
-				{
-					handleRotate();
-					m_requestRotate=false;
-				}
+				handleRotate();
+
 				if(m_requestFire)
 				{
 					fireBall();
@@ -221,12 +204,6 @@ namespace PoolKit
 			}
 
 		}
-
-        [RFC]
-        public void SyncPoolCueZPos(float z)
-        {
-            poolCueGO.transform.localPosition = new Vector3(0, 0, z);
-        }
 
 		public void fireBall()
 		{

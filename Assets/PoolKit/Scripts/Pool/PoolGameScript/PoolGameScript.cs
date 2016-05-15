@@ -103,6 +103,7 @@ namespace PoolKit
 				m_players  = players;
 			}
             m_state = State.IDLE;
+			BaseGameManager.showTitleCard("Player " + m_players[0].playerName + " Starts!");
             // player 0 plays first
             if (TNManager.isConnected && TNManager.isHosting)
             {
